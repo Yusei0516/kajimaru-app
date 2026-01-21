@@ -1,18 +1,54 @@
-# プロジェクト名
-かじまる
+## かじまる
+2025年　ハッカソン秋の陣（チーム開発/期間：2か月/メンバー：4人）
 
-## 概要
-プロジェクト名の由来は、「家事 ＋ まるっと」であり、日々の家事を全部回す・まるく収めることをねらいとする。
+Djangoベースで家事管理アプリを開発。Web3層構成で本番運用を想定したインフラ設計しました。
+ローカル環境ではDocker composeにより同様の構成を再現可能です。
 
-## 開発環境
-- Python 3.13       # 最新のLTSバージョン
-- Django 5.2.7      # 最新のLTSバージョン
-- MySQL 8.4         # AWS RDS MySQLのLTS(8.4)と整合
-- Bootstrap5 25.2   # Djangoと互換性のある最新版
+---
 
-## ディレクトリ・ファイル構成
+## 🚀使用技術
+- **フロントエンド**：HTML, CSS, JavaScript
+- **バックエンド**：Python（Django）, MySQL
+- **インフラ**：AWS, Docker
+- **Webサーバー**：Nginx＋Gunicorn
+- **開発管理**：GitHub
+
+---
+
+## 👤自分の担当
+**認証機能**
+- 新規登録
+- ログイン/ログアウト
+- 家族セッションを確立
+- ワンタイムパスワードによるセッション招待機能
+
+**買い物リスト**
+- 家族内で共有できる買い物リストを実装
+- 買い物リスト追加/編集/削除機能
+
+**天気レコメンド**
+- 天気APIを取得し、天候に適した家事をおすすめする機能
+
+---
+
+## 🗂️機能概要
+**認証機能**
+- 管理者が新規登録を行い、一般ユーザーをワンタイムパスワードで招待
+- 管理者が新規登録を行うことで、セッションを確立
+- その他一般的なログイン/ログアウト機能
+
+**買い物リスト**
+- 買い物リストを家族内で共有でき、チェックボックスで購入済みと未購入を管理
+- 商品一つ一つにメモや数量を登録できる
+
+**天気レコメンド**
+- ダッシュボード上に用意されたボタンを押下すると天気とおすすめの家事をモーダルで表示
+
+---
+
+## 📂ディレクトリ・ファイル構成
 本プロジェクトのディレクトリ・ファイル構成を以下のとおり示す。
-
+```
 <pre>
 .
 └── プロジェクト名
@@ -52,22 +88,17 @@
     ├── README.md                             # プロジェクトの説明ファイル
     └── requirements.txt                      # 依存関係ファイル
 </pre>
-
-## 開発環境の起動から終了までの手順
-### 1) 環境変数ファイル.envの作成
-.env.exampleをコピーして、.envファイルをプロジェクトルートディレクトリ直下に保存する。  
-注）.envファイルは必ず、.env.exampleファイルと同じ階層に保存すること。（Docker、Djangoの設定ファイルで環境変数.envのファイルパスを指定しているため。）  
-```
-cp .env.example .env
 ```
 
-以下が.env.exampleの中身であり、「各自で変更する設定」を各自で変更する。  
-「DJANGO_SECRET_KEY」の設定は、以下のとおりである。  
-```
+## ▶️ 実行方法（ローカル）
+```bash
+# 環境変数ファイルの作成
+cp .env.sample .env
+
+# 🔑SECRET_KEY生成方法
 python -c "import secrets; print(secrets.token_urlsafe(50))"
-```
 
-```
+# .envの中身は以下のように設定してください(サンプル):
 # ======= ✅ チームで共通にする設定 =======
 MYSQL_DATABASE=django_db                    # 開発環境で使うデータベース名（チームで共通・固定）
 MYSQL_USER=dev_user                         # 開発用のデータベースユーザ名（チーム共通）
@@ -89,17 +120,14 @@ UID=your_uid                                # 各自のuidを指定（id -uコ�
 GID=your_gid                                # 各自のgidを指定（id -gコマンドで確認）
 ```
 
-### 2) 起動時のdockerコマンド
-初回起動ではイメージをビルドする必要があるため、以下のコマンドで起動させる。  
+# 開発環境立ち上げ
 ```
 docker compose up --build
-```  
-もしくは  
+```
+もしくは
 ```
 make build
-```  
-
-※Makefileには、使用頻度の高いコマンドを省略して打てるように設定している。以降も通常版とmake版で記述する。
+```
 
 2回目以降は既にイメージがビルドされているため、以下のコマンドで起動してもよい。  
 必要に応じて、 **-d** をupの後に付けて、バックグラウンドで起動してもよい。  
@@ -111,7 +139,7 @@ docker compose up -d
 make up
 ```
 
-### 3) 終了時のdockerコマンド
+終了時のdockerコマンド
 終了時は以下のコマンドで終了する。  
 必要に応じて、ボリューム（db_data）を削除する場合は、 **-v** をdownのあとに付ける。  
 ```
@@ -123,136 +151,15 @@ make down
 ```
 
 ## アクセス先
-ブラウザで以下のアドレスを入力して、Djangoの初期画面が開いていることを確認する。  
 ```
 http://localhost:8000/
 ```  
 もしくは  
 ```
 http://127.0.0.1:8000/
-```  
-
-ドキュメントが **「日本語」** 、DEBUGが **「True」** になっていることを確認する。  
-成功すると以下の画面が表示される。  
-<img width="auto" height="auto" alt="Image" src="https://github.com/user-attachments/assets/15fc92ec-35fb-4c9e-9c9a-3439b8e3fd29" />
-
-## 各コンテナへのアクセス手順
-### 1)MySQL(db)
-MySQLコンテナへのアクセスは、以下のコマンドを入力する。  
-```
-docker compose exec -it db mysql -u dev_user -p
-```  
-もしくは  
-```
-make db
-```  
-コマンド入力後にパスワードを聞かれるため、.envの「MYSQL_PASSWORD」で設定したパスワードを各自入力する。  
-
-### 2)Django(web)
-Djangコンテナへのアクセスは、以下のコマンドを入力する。  
-```
-docker compose exec -it web /bin/bash
-```  
-もしくは  
-```
-make sh
-```  
-
-また、docker compose up -dで起動した後に、Djangoのlogsを確認したい場合は、以下のコマンドを入力する。  
-```
-docker compose logs -f web
-```  
-もしくは  
-```
-make logs
-```  
-
-## Django 新規アプリ作成手順（以降はバックエンドの作業手順）
-### 1) 新規アプリの作成
-以下のコマンドで新規アプリを作成する。  
-通常のコマンドでは、長くなるため、以下のmakeコマンドを推奨する。  
-<アプリ名>に作成したいアプリを入力する。  
-```
-make app name=<アプリ名>
-```  
-もしくは  
-```
-docker compose exec web mkdir -p apps/<アプリ名>
-```  
-```
-docker compose exec web python manage.py startapp <アプリ名> apps/<アプリ名>
-```  
-
-コマンド入力後に、/src/appsの直下に指定したアプリが作成されていることを確認する。  
-
-### 2) INSTALLED_APPSへの新規アプリ追加
-以下のファイル（base.py）のINSTALLED_APPS変数へ新規アプリを追加する。  
-```
-/src/config/settings/base.py
-```  
-```
-INSTALLED_APPS = [
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-    '（ここにアプリを追加する。以下はアプリ名「test」の一例）',
-    'apps.test.apps.TestConfig'
-]
 ```
 
-### 3) apps.pyへのname追加
-新規作成したアプリディレクトリ内のapps.pyへnameを追加する。  
-以下はアプリ名「test」とした場合の一例である。  
-appsディレクトリ下にあるため、name=apps.<アプリ名>とする。  
-```
-class TestConfig(AppConfig):
-    default_auto_field = 'django.db.models.BigAutoField'
-    name = 'apps.test'
-```
+## 📸起動イメージ
+<img width="715" height="393" alt="image" src="https://github.com/user-attachments/assets/16afcd2c-dd21-4a02-abde-8018723252c6" />
 
-## Django マイグレーションファイル作成、マイグレーションの手順
-### 1) models.pyへのテーブル定義
-該当アプリディレクトリのmodels.pyにテーブルを定義する。  
 
-### 2) マイグレーションファイルの作成
-models.pyのテーブル定義後、マイグレーションファイルを作成するために以下のコマンドを入力する。  
-```
-docker compose exec web python manage.py makemigrations
-```  
-もしくは  
-```
-make mm
-```  
-マイグレーションファイルが作成されると、該当ディレクトリの「migrations」にマイグレーションファイルが作成される。（例：0001_initial.py）  
-
-### 3) マイグレーション（データベースへの反映）
-マイグレーションファイルが作成された後に、以下のコマンドを入力して、データベースへ反映させる。  
-```
-docker compose exec web python manage.py migrate
-```  
-もしくは  
-```
-make migrate
-```  
-
-コマンド入力後に、MySQLコンテナへ入り、テーブルが作成されていれば、マイグレーション完了である。  
-
-## Django 管理者作成手順
-Djangoでの管理者作成は、以下のコマンドで行う。  
-```
-docker compose exec web python manage.py createsuperuser
-```  
-もしくは  
-```
-make csu
-```  
-コマンド入力後に、ユーザー名、メールアドレス（省略可）、パスワードが聞かれるため、各自で設定する。  
-ブラウザに以下のアドレスを入力し、設定したユーザー名とパスワードを入力し、ログインできるか確認する。  
-```
-http://localhost:8000/ or http://127.0.0.1:8000/
-```  
-成功すると以下の画面が表示される。  
-<img width="auto" height="auto" alt="Image" src="https://github.com/user-attachments/assets/db0ab465-c744-4f87-8bbd-0e018c0beaa2" />
